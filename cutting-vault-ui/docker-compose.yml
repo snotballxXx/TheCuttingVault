@@ -1,0 +1,48 @@
+version: '3'
+services:
+  mysql-cutting-vault:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    volumes:
+      - /home/pete/projects/data:/var/lib/mysql
+      - /etc/mysql:/etc/mysql/conf.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+    networks:
+      - cutting-vault-network
+    restart: always
+
+  cutting-vault-ui:
+    image: cutting-vault-ui
+    ports:
+      - "8090:80"
+      - "8091:443"
+    volumes:
+#      - /etc/letsencrypt/live/cutting-vault.duckdns.org/:/var/www/certbot/:ro
+      - ./nginx/conf/:/etc/nginx/conf.d/:ro
+#      - ./certbot/www:/var/www/certbot/:ro      
+    networks:
+      - cutting-vault-network
+    restart: always
+
+ # certbot:
+ #   image: certbot/certbot:latest
+ #   volumes:
+ #     - ./certbot/www/:/var/www/certbot/:rw
+ #     - ./certbot/conf/:/etc/letsencrypt/:rw
+
+  cutting-vault-api:
+    image: cutting-vault-api
+    ports:
+      - "8080:8080"
+    volumes:
+      - /home/pete/projects/logs:/var/logs
+    networks:
+      - cutting-vault-network
+    restart: always
+
+
+networks:
+  cutting-vault-network:
+    driver: bridge
