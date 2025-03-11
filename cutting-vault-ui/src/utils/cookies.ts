@@ -1,7 +1,8 @@
 // src/utils/cookies.ts
 import Cookies from 'js-cookie';
 
-export const setCookie = (name: string, value: string, days: number) => {
+export const setCookie = (name: string, value: string, days: number = 7) => {
+    console.log(`Setting cookie ${name}: ${value}`);
     const expires = days ? days : 7; // Default to 7 days if not specified
     Cookies.set(name, value, { expires });
 };

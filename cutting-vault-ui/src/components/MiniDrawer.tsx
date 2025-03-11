@@ -26,6 +26,8 @@ import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import GroupIcon from '@mui/icons-material/Group';
 import ChatIcon from '@mui/icons-material/Chat';
 import { removeUser } from '../utils/utils';
+import ThemeToggleButton from './ThemeToggleButton';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const drawerWidth = 280;
 
@@ -132,7 +134,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
 
     const handleLogOut = () => {
         dispatch(logOut());
-        //localStorage.removeItem('token');        
+        //localStorage.removeItem('token');
         removeUser();
         navigate('/login');
     };
@@ -141,6 +143,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
             <AppBar position="fixed" open={open}>
+                {' '}
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -156,9 +159,16 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="div"
+                        sx={{ flexGrow: 1 }}
+                    >
                         {titleState.title}
                     </Typography>
+                    <ThemeToggleButton />
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
@@ -166,6 +176,8 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                     <Typography variant="h6" noWrap component="div">
                         The Cutting Vault
                     </Typography>
+                    {/* Spacer */}
+                    <Box sx={{ flexGrow: 1 }} />
                     <IconButton onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? (
                             <ChevronRightIcon />
@@ -299,8 +311,41 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                         </ListItemButton>
                     </ListItem>
                 </List>
-                <Divider />
+                {/* Spacer this forces kogout down*/}
+                <Box sx={{ flexGrow: 1 }} />
                 <List>
+                    <ListItem
+                        key="profile"
+                        disablePadding
+                        sx={{ display: 'block' }}
+                    >
+                        <ListItemButton
+                            component={Link}
+                            to="/profile"
+                            sx={[
+                                { minHeight: 48, px: 2.5 },
+                                open
+                                    ? { justifyContent: 'initial' }
+                                    : { justifyContent: 'center' },
+                            ]}
+                        >
+                            <ListItemIcon
+                                sx={[
+                                    { minWidth: 0, justifyContent: 'center' },
+                                    open ? { mr: 3 } : { mr: 'auto' },
+                                ]}
+                            >
+                                <AccountCircleIcon fontSize="large"/>
+                            </ListItemIcon>
+                            <ListItemText
+                                primary="Profile"
+                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
+                            />
+                        </ListItemButton>
+                    </ListItem>
+                </List>
+                <Divider />
+                <List sx={{ display: 'flex' }}>
                     <ListItem
                         key="LogOut"
                         disablePadding
@@ -321,7 +366,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                                     open ? { mr: 3 } : { mr: 'auto' },
                                 ]}
                             >
-                                <LogoutIcon />
+                                <LogoutIcon fontSize="large"/>
                             </ListItemIcon>
                             <ListItemText
                                 primary="Log Out"

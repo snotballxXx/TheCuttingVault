@@ -16,6 +16,7 @@ const PrivateRoute: React.FC = () => {
             dispatch(logIn(user));
         }
     } catch (err) {
+        debugger;
         console.log('error recreating user');
     }
 

@@ -19,8 +19,6 @@ import { removeCookie, setCookie } from '../../utils/cookies';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../../store/userSlice';
-import iconCutting from '../../assets/scissors.svg';
-import iconVault from '../../assets/bank-safe.svg';
 import NewPasswordDialog from './NewPasswordDialog';
 import PasswordInput from '../PasswordInput';
 
@@ -115,8 +113,6 @@ export default function LoginDialog() {
                     <Typography variant="h4" component="h4" gutterBottom>
                         The Cutting Vault
                     </Typography>{' '}
-                    <img src={iconCutting} alt="Icon" width="24" height="24" />
-                    <img src={iconVault} alt="Icon" width="24" height="24" />
                 </DialogTitle>
                 <DialogContent>
                     <TextField
