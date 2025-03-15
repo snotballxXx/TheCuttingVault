@@ -36,6 +36,18 @@ export type PagedSet<T> = {
     itemsPerPage: number;
 };
 
+export type PaginationModel = {
+  page: number,
+  pageSize: number
+}
+
+export type PageData = {
+  pageNumber: number,
+  itemsPerPage: number,
+  sortColumn: string,
+  directionAsc: boolean 
+}
+
 export interface UserLoginRequest {
     password: string;
     userName: string;

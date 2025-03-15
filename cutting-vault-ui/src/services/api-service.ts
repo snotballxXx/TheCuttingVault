@@ -5,6 +5,7 @@ import { navigateTo } from './NavigationService';
 import {
     ChangePasswordRequest,
     Customer,
+    PageData,
     PagedSet,
     RefreshResponse,
     UserLoginRequest,
@@ -15,7 +16,9 @@ import { removeUser } from '../utils/utils';
 
 // Create an Axios instance with default configuration
 const apiClient = axios.create({
-    baseURL: window.location.origin, // Replace with your API base URL 'http://localhost:5187'
+    baseURL: window.location.origin.includes('localhost')
+        ? 'http://localhost:5187'
+        : window.location.origin,
     timeout: 10000, // Request timeout in milliseconds
     withCredentials: true,
     headers: {
@@ -76,12 +79,9 @@ export const changePassword = async (changePwd: ChangePasswordRequest) => {
     await apiClient.put(`/api/v1/Auth/changePwd`, changePwd);
 };
 
-export const getCustomerPage = async (
-    pageNumber: number,
-    itemsPerPage: number,
-) => {
+export const getCustomerPage = async (pageData: PageData) => {
     const response = await apiClient.get<PagedSet<Customer>>(
-        `/api/v1/customer?pageNumber=${pageNumber}&itemsPerPage=${itemsPerPage}`,
+        `/api/v1/customer?pageNumber=${pageData.pageNumber}&itemsPerPage=${pageData.itemsPerPage}&orderBy=${pageData.sortColumn}&ascending=${pageData.directionAsc}`,
     );
     return response.data;
 };
@@ -125,8 +125,8 @@ export const updateCustomerComment = async (customer: Customer) => {
     return response.data;
 };
 
-export const deleteCustomer = async (id: number) => {
-    const response = await apiClient.delete(`/api/v1/customer/${id}`);
+export const deleteCustomer = async (ids: number[]) => {
+    const response = await apiClient.delete(`/api/v1/customer/?ids=${ids.join('-')}`);
     return response.data;
 };
 

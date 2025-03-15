@@ -25,11 +25,11 @@ namespace CuttingVaultApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCustomerPage([FromQuery] int pageNumber, [FromQuery] int itemsPerPage)
+        public async Task<IActionResult> GetCustomerPage([FromQuery] int pageNumber, [FromQuery] int itemsPerPage, string orderBy, bool ascending)
         { 
             try
             {
-                var list = await _customerRepository.GetPageAsync(pageNumber, itemsPerPage, "lastName");
+                var list = await _customerRepository.GetPageAsync(pageNumber, itemsPerPage, orderBy, ascending);
                 return Ok(list);
             }
             catch (Exception ex)
@@ -145,18 +145,30 @@ namespace CuttingVaultApi.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [HttpDelete()]
+        public async Task<IActionResult> Delete([FromQuery] string ids)
         {
             try
             {
-                var customer = await _customerRepository.GetByIdAsync(id);
-                if (customer == null)
-                    return NotFound();
+                if (ids == null)
+                {
+                    _logger.LogError($"No ids in delete request");
+                    return BadRequest();
+                }
 
-                _customerRepository.Delete(id);
-                await _customerRepository.SaveAsync();
-                return Ok();
+                var idNumbers = ids.Split('-')
+                    .ToList()
+                    .Select(e => int.Parse(e))
+                    .ToArray();
+
+                if (idNumbers != null)
+                {
+                    _customerRepository.DeleteRange(idNumbers);
+                    await _customerRepository.SaveAsync();
+                    return Ok();
+                }
+                _logger.LogError($"No ids in delete request after process");
+                return BadRequest();
             }
             catch (Exception ex)
             {

@@ -4,6 +4,10 @@ using System.Linq.Dynamic.Core;
 
 namespace CuttingVaultApi.Database
 {
+    interface IDbo
+    {
+        int Id { get; set; }
+    }
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly CuttingVaultDbContext _Context;
@@ -53,6 +57,23 @@ namespace CuttingVaultApi.Database
                 _DbSet.Remove(entity);
             }
         }
+        public void DeleteRange(T[] items)
+        {
+            _DbSet.RemoveRange(items);
+        }
+
+        public void DeleteRange(int[] idsToDelete)
+        {
+            var entitiesToDelete = new List<T>();
+            foreach (var id in idsToDelete)
+            {
+                var item = _DbSet.Find(id);
+                if (item != null)
+                    entitiesToDelete.Add(item);
+            }
+            // Delete the filtered entities
+            _DbSet.RemoveRange(entitiesToDelete);
+        }
 
         public void Save()
         {
@@ -64,10 +85,11 @@ namespace CuttingVaultApi.Database
             return _Context.SaveChangesAsync();
         }
 
-        public PagedSet<T> GetPage(int pageNumber, int itemsPerPage, string orderBy = "", bool desc = false)
+        public PagedSet<T> GetPage(int pageNumber, int itemsPerPage, string orderBy, bool ascending)
         {
+            var direction = ascending ? "ascending" : "descending";
             var startItem = pageNumber * itemsPerPage - itemsPerPage;
-            var query = _DbSet.Skip(startItem).Take(itemsPerPage);
+            var query = _DbSet.OrderBy($"{orderBy} {direction}").Skip(startItem).Take(itemsPerPage);
             var q = query.ToQueryString();
 
             var result = new PagedSet<T>()
@@ -81,11 +103,11 @@ namespace CuttingVaultApi.Database
             return result;
         }
 
-        public async Task<PagedSet<T>> GetPageAsync(int pageNumber, int itemsPerPage, string orderBy = "", bool desc = false)
+        public async Task<PagedSet<T>> GetPageAsync(int pageNumber, int itemsPerPage, string orderBy, bool ascending)
         {
-            var asc = desc ? "descending" : "ascending"; 
+            var direction = ascending ? "ascending" : "descending"; 
             var startItem = pageNumber * itemsPerPage - itemsPerPage;
-            var query = _DbSet.OrderBy($"{orderBy} {asc}").Skip(startItem).Take(itemsPerPage);
+            var query = _DbSet.OrderBy($"{orderBy} {direction}").Skip(startItem).Take(itemsPerPage);
             var q = query.ToQueryString();
 
             var result = new PagedSet<T>()

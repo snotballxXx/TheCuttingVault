@@ -5,7 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login, setAuthToken } from '../../services/api-service';
 import {
     Alert,
@@ -20,15 +20,19 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../../store/userSlice';
 import NewPasswordDialog from './NewPasswordDialog';
-import PasswordInput from '../PasswordInput';
+import PasswordInput, { PasswordData } from '../PasswordInput';
+import { DialogResult } from '../../store/dataTypes';
 
 export default function LoginDialog() {
     const [open, setOpen] = useState(true);
     const [userName, setUserName] = useState('');
-    const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
     const [pending, setPending] = useState(false);
     const [changePassword, setChangePassword] = useState(false);
+    const [newPasswordData, setNewPasswordData] = useState<PasswordData>({
+        password: '',
+        enterPressed: false,
+    });    
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [keepLoggedIn, setKeepLoggedIn] = useState<boolean>(false);
@@ -40,26 +44,30 @@ export default function LoginDialog() {
         if (reason === 'backdropClick' || reason === 'escapeKeyDown') {
             return;
         }
-        setOpen(false);
     };
+
+    useEffect(() => {
+        if (newPasswordData.enterPressed && userName.length !== 0 && newPasswordData.password.length !== 0) {
+          handleLogin();
+      }
+    }, [newPasswordData]);
 
     const handleLogin = async () => {
         try {
             setPending(true);
-            const result = await login({ userName, password });
+            const result = await login({ userName, password: newPasswordData.password });
             // Store the token in local storage and set the auth token
-            //localStorage.setItem('token', result.token);
             setCookie('authToken', result.token, 7);
             setAuthToken(result.token);
-            setOpen(false);
             dispatch(logIn(result.user));
             if (keepLoggedIn) {
-                setCookie('user', JSON.stringify(result.user), 7);
+                setCookie('user', JSON.stringify(result.user));
             } else {
                 removeCookie('user');
             }
 
             if (!result.user.changePassword) {
+              setOpen(false);
                 navigate('/');
             } else {
                 setChangePassword(true);
@@ -72,30 +80,25 @@ export default function LoginDialog() {
         setPending(false);
     };
 
-    const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (
-            event.key === 'Enter' &&
-            userName.length !== 0 &&
-            password.length !== 0
-        ) {
-            handleLogin();
-        }
-    };
-
-    const passwordUpdate = (password: string, enterPressed: boolean) => {
-        setPassword(password);
-        if (enterPressed && userName.length !== 0 && password.length !== 0) {
-            handleLogin();
-        }
-    };
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setKeepLoggedIn(event.target.checked);
     };
 
+    const changePasswordClose =  (result: DialogResult) => {
+      setChangePassword(false);
+      if (result !== DialogResult.cancel)
+        setOpen(false);
+  }
+
+    const newPasswordUpdate = (password: PasswordData) => {
+        setNewPasswordData(password);
+    };  
+
     return (
         <>
-            {changePassword && <NewPasswordDialog userName={userName} />}
+            {changePassword && (
+                <NewPasswordDialog userName={userName} routeToHome={true} callback={changePasswordClose}/>
+            )}
             <Dialog
                 open={open}
                 onClose={handleClose}
@@ -121,12 +124,11 @@ export default function LoginDialog() {
                         fullWidth
                         margin="normal"
                         value={userName}
-                        onKeyUp={handleKeyPress}
                         onChange={(e) => setUserName(e.target.value)}
                     />
 
                     <PasswordInput
-                        passwordUpdateCallback={passwordUpdate}
+                        passwordUpdateCallback={newPasswordUpdate}
                         displayLabel="Password"
                     />
                 </DialogContent>

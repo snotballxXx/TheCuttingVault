@@ -28,6 +28,8 @@ import ChatIcon from '@mui/icons-material/Chat';
 import { removeUser } from '../utils/utils';
 import ThemeToggleButton from './ThemeToggleButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { useEffect } from 'react';
+import { getCookie, setCookie } from '../utils/cookies';
 
 const drawerWidth = 280;
 
@@ -119,17 +121,27 @@ interface MiniDrawerProps {
 
 const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
     const titleState = useSelector((state: RootState) => state.title);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    useEffect(() => {
+      var drawState = getCookie('drawState');
+      if (drawState) {
+        setOpen((drawState === 'open') ? true : false);
+      }
+
+    }, []);
+
     const handleDrawerOpen = () => {
         setOpen(true);
+        setCookie('drawState', 'open');
     };
 
     const handleDrawerClose = () => {
         setOpen(false);
+        setCookie('drawState', 'closed');
     };
 
     const handleLogOut = () => {
@@ -335,7 +347,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                                     open ? { mr: 3 } : { mr: 'auto' },
                                 ]}
                             >
-                                <AccountCircleIcon fontSize="large"/>
+                                <AccountCircleIcon fontSize="large" />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Profile"
@@ -366,7 +378,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                                     open ? { mr: 3 } : { mr: 'auto' },
                                 ]}
                             >
-                                <LogoutIcon fontSize="large"/>
+                                <LogoutIcon />
                             </ListItemIcon>
                             <ListItemText
                                 primary="Log Out"

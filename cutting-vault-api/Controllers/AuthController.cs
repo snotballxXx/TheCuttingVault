@@ -13,13 +13,18 @@ namespace CuttingVaultApi.Controllers
         private readonly ILogger _logger;
         private readonly IUserRepository _userRepo;
         private readonly ISecurityManager _securityManager;
+        private readonly IRefreshTokenRepository _refeshTokenRepository;
         private readonly int? _lockOutCount;
 
-        public AuthController(ILogger<AuthController> logger, IConfiguration configuration, IUserRepository userRepo, ISecurityManager securityManager)
+        public AuthController(ILogger<AuthController> logger, IConfiguration configuration, 
+            IUserRepository userRepo,
+            ISecurityManager securityManager,
+            IRefreshTokenRepository refeshTokenRepository)
         {
             _logger = logger;
             _userRepo = userRepo;
             _securityManager = securityManager;
+            _refeshTokenRepository = refeshTokenRepository;
 
             _lockOutCount = configuration.GetValue<int>("security:lockoutCount", defaultValue: 3);
         }
@@ -44,8 +49,8 @@ namespace CuttingVaultApi.Controllers
                 }
 
                 var newRefreshToken = _securityManager.GenerateRefreshToken();
+                _refeshTokenRepository.DeleteRange(user.RefreshTokens.ToArray());
                 user.RefreshTokens.Add(newRefreshToken);
-
                 _userRepo.Update(user);
                 await _userRepo.SaveAsync();
 

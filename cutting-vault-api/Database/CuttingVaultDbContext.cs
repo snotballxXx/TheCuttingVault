@@ -38,31 +38,39 @@ namespace CuttingVaultApi.Database
             modelBuilder.Entity<UserDbo>()
                 .Property(u => u.ChangePassword)
                 .HasDefaultValue(false);
-            /*
-                        modelBuilder.Entity<UserDbo>()
-                            .Property(u => u.Password)
-                            .IsRequired(true);
 
-                        modelBuilder.Entity<UserDbo>()
-                            .Property(u => u.UserName)
-                            .IsRequired(true);
+            modelBuilder.Entity<UserDbo>()
+                .Property(u => u.AccountLocked)
+                .HasDefaultValue(false);
 
-                        modelBuilder.Entity<UserDbo>()
-                            .Property(u => u.FirstName)
-                            .IsRequired(false);
+            modelBuilder.Entity<UserDbo>()
+                .Property(u => u.FailedLoginCount)
+                .HasDefaultValue(0);
 
-                        modelBuilder.Entity<UserDbo>()
-                            .Property(u => u.LastName)
-                            .IsRequired(false);
+            modelBuilder.Entity<UserDbo>()
+                .Property(u => u.Password)
+                .IsRequired(true);
 
-                        modelBuilder.Entity<UserDbo>()
-                            .Property(u => u.Email)
-                            .IsRequired(false);*/
+            modelBuilder.Entity<UserDbo>()
+                .Property(u => u.FirstName)
+                .IsRequired(false);
+
+            modelBuilder.Entity<UserDbo>()
+                .Property(u => u.LastName)
+                .IsRequired(false);
+
+            modelBuilder.Entity<UserDbo>()
+                .Property(u => u.Email)
+                .IsRequired(false);
+
+            modelBuilder.Entity<CustomerDbo>()
+                .Property(c => c.CreationDate)
+                .HasDefaultValueSql("NOW()");
 
             modelBuilder.Entity<UserDbo>()
                 .HasMany(p => p.RefreshTokens)
                 .WithOne(c => c.User)
-                .HasForeignKey(c => c.UserId );
+                .HasForeignKey(c => c.UserId);
 
             modelBuilder.Entity<UserAppointmentDbo>()
                 .HasOne(ua => ua.User)

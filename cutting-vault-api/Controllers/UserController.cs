@@ -52,12 +52,12 @@ namespace CuttingVaultApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUserPage([FromQuery] int pageNumber, [FromQuery] int itemsPerPage)
+        public async Task<IActionResult> GetUserPage([FromQuery] int pageNumber, [FromQuery] int itemsPerPage, string orderBy, bool ascending)
         {
             try
             {
                 Expression<Func<UserDbo, string>> orderByFunc = (e) => e.UserName;
-                var list = await _userRepository.GetPageAsync(pageNumber, itemsPerPage, "");
+                var list = await _userRepository.GetPageAsync(pageNumber, itemsPerPage, orderBy, ascending);
                 return Ok(list);
             }
             catch (Exception ex)

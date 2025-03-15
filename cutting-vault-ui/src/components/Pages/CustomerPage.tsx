@@ -18,7 +18,6 @@ import AddUpdateDialog from '../Dialogs/AddUpdateDialog';
 import DeleteDialog from '../Dialogs/DeleteDialog';
 
 const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 90 },
     {
         field: 'firstName',
         headerName: 'First name',
@@ -33,12 +32,17 @@ const columns: GridColDef[] = [
         width: 110,
         editable: false,
     },
-    { field: 'barcode', headerName: 'Barcode', width: 150, editable: false },
+    {
+        field: 'phoneNumber',
+        headerName: 'Phone Number',
+        width: 150,
+        editable: false,
+    },
+    { field: 'comment', headerName: 'Comment', width: 150, editable: false },
     { field: 'email', headerName: 'Email', width: 150, editable: false },
     { field: 'street', headerName: 'Street', width: 150, editable: false },
     { field: 'town', headerName: 'Town', width: 150, editable: false },
     { field: 'suburb', headerName: 'Suburb', width: 150, editable: false },
-    { field: 'comment', headerName: 'Comment', width: 150, editable: false },
 ];
 
 const CustomerPage: React.FC = () => {
@@ -56,7 +60,12 @@ const CustomerPage: React.FC = () => {
 
         const init = async () => {
             try {
-                const result = await getCustomerPage(1, 10000);
+                const result = await getCustomerPage({
+                    pageNumber: 1,
+                    itemsPerPage: 10000,
+                    sortColumn: 'lastName',
+                    directionAsc: true,
+                });
                 setRows(result.page);
             } catch (err) {
                 console.log(err);
@@ -108,22 +117,22 @@ const CustomerPage: React.FC = () => {
         if (result !== DialogResult.ok) return;
 
         try {
-            const selectedIds = Array.from(selectionModel); // Convert Readonly to array
+            const selectedRows = rows
+                .filter((row: Customer) => selectionModel.includes(row.id))
+                .map((e) => e.id);
 
-            //selectedIds.forEach(e => {
-            await deleteCustomer(Number(selectedIds[0]));
-            //});
-            // const newSelectionModel = selectionModel.filter(id => id !== selectedIds[0]);
-            // setSelectionModel(newSelectionModel);
+            if (selectedRows) {
+                await deleteCustomer(selectedRows);
+                debugger;
+                const newRows = rows.filter(
+                    (customer) => !selectedRows.includes(customer.id),
+                );
+                setRows(newRows);
 
-            const newRows = rows.filter(
-                (customer) => customer.id !== Number(selectedIds[0]),
-            );
-            setRows(newRows);
-
-            enqueueSnackbar('Successfully deleted customer data', {
-                variant: 'success',
-            });
+                enqueueSnackbar('Successfully deleted customer data', {
+                    variant: 'success',
+                });
+            }
         } catch (err) {
             console.log(err);
             enqueueSnackbar('Failed to delete customer data', {

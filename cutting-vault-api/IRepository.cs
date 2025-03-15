@@ -20,9 +20,11 @@ namespace CuttingVaultApi
         void Insert(T entity);
         void Update(T entity);
         void Delete(int id);
+        void DeleteRange(T[] items);
+        void DeleteRange(int[] ids);
         void Save();
         Task SaveAsync();
-        PagedSet<T> GetPage(int pageNumber, int itemsPerPage, string orderBy = "", bool desc = false);
-        Task<PagedSet<T>> GetPageAsync(int pageNumber, int itemsPerPage, string orderBy = "", bool desc = false);
+        PagedSet<T> GetPage(int pageNumber, int itemsPerPage, string orderBy, bool ascending);
+        Task<PagedSet<T>> GetPageAsync(int pageNumber, int itemsPerPage, string orderBy, bool ascending);
     }
 }

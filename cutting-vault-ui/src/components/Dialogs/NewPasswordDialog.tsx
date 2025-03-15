@@ -1,21 +1,25 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { changePassword } from '../../services/api-service';
-import { Alert, Typography } from '@mui/material';
+import { Alert, Box, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import iconCutting from '../../assets/scissors.svg';
-import iconVault from '../../assets/bank-safe.svg';
 import { isPasswordValid } from '../../utils/utils';
 import { useSnackbar } from 'notistack';
+import { DialogResult } from '../../store/dataTypes';
+import PasswordInput, { PasswordData } from '../PasswordInput';
+
+export type ChangePasswordDialogResult = (result: DialogResult) => void;
 
 export type Props = {
     userName: string;
+    routeToHome: boolean;
+    callback?: ChangePasswordDialogResult;
+    title?: string;
 };
 
 export default function NewPasswordDialog(props: Props) {
@@ -24,10 +28,50 @@ export default function NewPasswordDialog(props: Props) {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [error, setError] = useState(false);
+    const [newPasswordData, setNewPasswordData] = useState<PasswordData>({
+        password: '',
+        enterPressed: false,
+    });
+    const [oldPasswordData, setOldPasswordData] = useState<PasswordData>({
+        password: '',
+        enterPressed: false,
+    });
+    const [confirmPasswordData, setConfirmPasswordData] =
+        useState<PasswordData>({ password: '', enterPressed: false });
     const [errorMessage, setErrorMessage] = useState('');
     const { enqueueSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        setNewPassword(newPasswordData.password);
+        if (newPasswordData.enterPressed) {
+            setTimeout(() => checkPasswordChange(), 1);
+        }
+    }, [newPasswordData]);
+
+    useEffect(() => {
+        setOldPassword(oldPasswordData.password);
+        if (oldPasswordData.enterPressed) {
+          setTimeout(() => checkPasswordChange(), 1);
+        }
+    }, [oldPasswordData]);
+
+    useEffect(() => {
+        setConfirmPassword(confirmPasswordData.password);
+        if (confirmPasswordData.enterPressed) {
+          setTimeout(() => checkPasswordChange(), 1);
+        }
+    }, [confirmPasswordData]);
+
+    const checkPasswordChange = () => {
+        if (
+            oldPassword.length !== 0 &&
+            newPassword.length !== 0 &&
+            confirmPassword.length !== 0
+        ) {
+            handlePasswordChange();
+        }
+    };
     const handleClose = (
         _: React.MouseEvent | {},
         reason: 'backdropClick' | 'escapeKeyDown' | 'closeButtonClick',
@@ -36,6 +80,12 @@ export default function NewPasswordDialog(props: Props) {
             return;
         }
         setOpen(false);
+        if (props.callback) props.callback(DialogResult.ok);
+    };
+
+    const closeDialog = () => {
+        setOpen(false);
+        if (props.callback) props.callback(DialogResult.cancel);
     };
 
     const handlePasswordChange = async () => {
@@ -61,10 +111,12 @@ export default function NewPasswordDialog(props: Props) {
                 oldPassword,
             });
             setOpen(false);
+            if (props.callback) props.callback(DialogResult.ok);
             enqueueSnackbar('Successfully changed password', {
                 variant: 'success',
             });
-            navigate('/');
+
+            if (props.routeToHome) navigate('/');
         } catch (err) {
             enqueueSnackbar(
                 'Failed to change password, ensure the old password is correct.',
@@ -72,20 +124,17 @@ export default function NewPasswordDialog(props: Props) {
                     variant: 'error',
                 },
             );
-            //setOpen(false);
-            //navigate('/');
         }
     };
 
-    const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        if (
-            event.key === 'Enter' &&
-            oldPassword.length !== 0 &&
-            newPassword.length !== 0 &&
-            confirmPassword.length !== 0
-        ) {
-            handlePasswordChange();
-        }
+    const newPasswordUpdate = (password: PasswordData) => {
+        setNewPasswordData(password);
+    };
+    const oldPasswordUpdate = (password: PasswordData) => {
+        setOldPasswordData(password);
+    };
+    const confirmPasswordUpdate = (password: PasswordData) => {
+        setConfirmPasswordData(password);
     };
 
     return (
@@ -96,7 +145,7 @@ export default function NewPasswordDialog(props: Props) {
                 disableEscapeKeyDown
                 slotProps={{
                     backdrop: {
-                      style: { backgroundColor: 'rgba(0, 0, 0, 0.0)' }
+                        style: { backgroundColor: 'rgba(0, 0, 0, 0.0)' },
                     },
                     paper: {
                         component: 'form',
@@ -104,60 +153,55 @@ export default function NewPasswordDialog(props: Props) {
                 }}
             >
                 <DialogTitle>
-                    <Typography variant="h4" component="h4" gutterBottom>
-                        The Cutting Vault
-                    </Typography>{' '}
-                    <img src={iconCutting} alt="Icon" width="24" height="24" />
-                    <img src={iconVault} alt="Icon" width="24" height="24" />
+                    <Stack direction={'row'}>
+                        <Typography variant="h4" component="h4" gutterBottom>
+                            {props?.title ?? 'The Cutting Vault'}
+                        </Typography>{' '}
+                    </Stack>
                 </DialogTitle>
-                <DialogContent>
-                    <TextField
+                <DialogContent >
+                    <PasswordInput
+                        passwordUpdateCallback={oldPasswordUpdate}
+                        displayLabel="Old Password"
                         autoFocus
-                        label="Old Password"
-                        variant="outlined"
-                        type="password"
-                        fullWidth
-                        margin="normal"
-                        value={oldPassword}
-                        onKeyUp={handleKeyPress}
-                        onChange={(e) => setOldPassword(e.target.value)}
                     />
-
-                    <TextField
-                        label="New Password"
-                        variant="outlined"
-                        type="password"
-                        fullWidth
-                        margin="normal"
-                        value={newPassword}
-                        onKeyUp={handleKeyPress}
-                        onChange={(e) => setNewPassword(e.target.value)}
+                    <PasswordInput
+                        passwordUpdateCallback={newPasswordUpdate}
+                        displayLabel="New Password"
                     />
-
-                    <TextField
-                        label="Confirm Password"
-                        variant="outlined"
-                        type="password"
-                        fullWidth
-                        margin="normal"
-                        value={confirmPassword}
-                        onKeyUp={handleKeyPress}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    <PasswordInput
+                        passwordUpdateCallback={confirmPasswordUpdate}
+                        displayLabel="Confirm Password"
                     />
                 </DialogContent>
                 <DialogActions>
-                    {error && (
-                        <Alert sx={{ margin: '10px' }} severity="error">
-                            {errorMessage}
-                        </Alert>
-                    )}
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handlePasswordChange}
+                    <Stack
+                        direction={'column'}
+                        sx={{ width: '100%', padding: '20px' }}
                     >
-                        Update Password
-                    </Button>
+                        {error && (
+                            <Alert sx={{ margin: '10px' }} severity="error">
+                                {errorMessage}
+                            </Alert>
+                        )}
+                        <Stack direction={'row'}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={closeDialog}
+                            >
+                                Cancel
+                            </Button>
+                            <Box sx={{ flexGrow: 1 }} />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handlePasswordChange}
+                            >
+                                Update Password
+                            </Button>
+                        </Stack>
+                    </Stack>
                 </DialogActions>
             </Dialog>
         </>

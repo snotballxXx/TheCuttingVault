@@ -20,11 +20,13 @@ namespace CuttingVaultApi.Database
 
         public UserDbo GetUserByToken(string token)
         {
-            return _DbSet.Where(e => e.RefreshTokens.Any(t => t.Token == token && t.Revoked == null && t.Expires > DateTime.UtcNow)).FirstOrDefault();
+            return _DbSet.Where(e => e.RefreshTokens.Any(t => t.Token == token && t.Revoked == null && t.Expires > DateTime.UtcNow))
+                .Include(u => u.RefreshTokens).FirstOrDefault();
         }
         public Task<UserDbo> GetUserByTokenAsync(string token)
         {
-            return _DbSet.Where(e => e.RefreshTokens.Any(t => t.Token == token && t.Revoked == null && t.Expires > DateTime.UtcNow)).FirstOrDefaultAsync();
+            return _DbSet.Where(e => e.RefreshTokens.Any(t => t.Token == token && t.Revoked == null && t.Expires > DateTime.UtcNow))
+                .Include(u => u.RefreshTokens).FirstOrDefaultAsync();
         }
     }
 }

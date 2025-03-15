@@ -8,7 +8,7 @@ import {
     TextField,
 } from '@mui/material';
 import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { useState } from 'react';
 import { Customer, DialogResult } from '../../store/dataTypes';
 import { Moment } from 'moment';
@@ -27,7 +27,7 @@ export interface Props {
 const AddUpdateDialog = (props: Props) => {
     const [open, setOpen] = useState(true);
 
-    const inputCustomer: Customer = props.customer ?? {
+    const inputCustomer: Customer = (props?.customer !== null ) ? { ...props.customer } : {
         id: 0,
         firstName: '',
         lastName: '',
@@ -45,11 +45,14 @@ const AddUpdateDialog = (props: Props) => {
     };
 
     const [customer, setCustomer] = useState<Customer>(inputCustomer);
-    const [dob, setDob] = useState<Moment | null>(moment(inputCustomer.dateOfBirth));
+    const [dob, setDob] = useState<Moment | null>(
+        moment(inputCustomer.dateOfBirth),
+    );
 
     const handleOk = (): void => {
         setOpen(false);
-        props.closeCallback(DialogResult.ok, customer);
+        const newCustomer = { ...customer }
+        props.closeCallback(DialogResult.ok, newCustomer);
     };
 
     const handleCancel = (): void => {
@@ -77,7 +80,7 @@ const AddUpdateDialog = (props: Props) => {
                 disableEscapeKeyDown
                 slotProps={{
                     backdrop: {
-                      style: { backgroundColor: 'rgba(0, 0, 0, 0.0)' }
+                        style: { backgroundColor: 'rgba(0, 0, 0, 0.0)' },
                     },
                     paper: {
                         component: 'form',
@@ -146,16 +149,16 @@ const AddUpdateDialog = (props: Props) => {
                             />
                             <LocalizationProvider dateAdapter={AdapterMoment}>
                                 <DatePicker
+                                    label="Date of Birth"
                                     value={dob}
                                     onChange={(newValue) => {
                                         setDob(newValue);
                                         if (newValue)
-                                          customer.dateOfBirth = newValue?.toDate();
+                                            customer.dateOfBirth =
+                                                newValue?.toDate();
                                     }}
                                     slotProps={{
-                                        textField: {
-                                          
-                                        },
+                                        textField: {},
                                     }}
                                 />
                             </LocalizationProvider>

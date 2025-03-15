@@ -3,10 +3,15 @@ import { TextField, IconButton, InputAdornment, Box } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export type PasswordUpdate = (password: string, enterPressed: boolean) => void;
+export type PasswordData = {
+ password: string;
+ enterPressed: boolean;
+};
+export type PasswordUpdate = (password: PasswordData) => void;
 export type Props = {
     passwordUpdateCallback: PasswordUpdate;
     displayLabel: string;
+    autoFocus?: boolean;
 };
 
 const PasswordInput: React.FC<Props> = (props: Props) => {
@@ -18,14 +23,15 @@ const PasswordInput: React.FC<Props> = (props: Props) => {
     };
 
     const handleKeyPress = (event: React.KeyboardEvent<HTMLDivElement>) => {
-        props.passwordUpdateCallback(password, event.key === 'Enter');
+        props.passwordUpdateCallback({ password, enterPressed: event.key === 'Enter' });
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', marginTop:'10px'}}>
             <TextField
                 label={props.displayLabel}
                 type={showPassword ? 'text' : 'password'}
+                autoFocus={props?.autoFocus ?? false}
                 variant="outlined"
                 fullWidth
                 value={password}

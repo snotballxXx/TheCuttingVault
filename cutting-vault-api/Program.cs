@@ -45,13 +45,25 @@ namespace CuttingVaultApi
                 };
             });
 
+            // Add appsettings.json as the default configuration
+            builder.Configuration
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true) // Optional for fallback
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+                .AddEnvironmentVariables(); // Overrides JSON if environment variables are present
+
             // Configure Entity Framework and add DbContext
             builder.Services.AddDbContext<CuttingVaultDbContext>(options =>
-                options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? ""));
+            {
+                var con = builder.Configuration.GetConnectionString("DefaultConnection");
+                Console.WriteLine(con);
+                options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
+            });
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+            builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             builder.Services.AddScoped<ISecurityManager, SecurityManager>();
 
             // Configure logging
