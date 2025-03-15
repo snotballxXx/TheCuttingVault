@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Container, Paper, styled, Typography } from '@mui/material';
+import { Button, Container } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateTitle } from '../../store/actions';
 import { RootState } from '../../store/store';
 import NewPasswordDialog from '../Dialogs/NewPasswordDialog';
-import Grid from '@mui/material/Grid2';
-
-const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    ...theme.applyStyles('dark', {
-        backgroundColor: '#1A2027',
-    }),
-}));
 
 const ProfilePage: React.FC = () => {
     const dispatch = useDispatch();

@@ -35,7 +35,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
     useEffect(() => {
         const init = async () => {
             try {
-                const result = await getCustomerPage( { pageNumber:1, itemsPerPage:10000, sortColumn:'', directionAsc:true });
+                const result = await getCustomerPage( { pageNumber:1, itemsPerPage:10000, sortColumn:'LastName', directionAsc:true });
                 setTotalRows(result.page);
                 setRows(result.page);
             } catch (err) {
