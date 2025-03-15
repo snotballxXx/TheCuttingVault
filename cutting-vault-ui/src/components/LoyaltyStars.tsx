@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, SvgIconProps, SvgIcon, SxProps, Theme, Button } from '@mui/material';
+import { Box, SvgIconProps, SvgIcon, SxProps, Theme, Button, IconButton } from '@mui/material';
 import { updateTitle } from '../store/actions';
 import { RootState } from '../store/store';
 import { set } from '../store/loyaltySlice';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 export type LoyaltyCountUpdate = (value: number) => void;
 
@@ -43,14 +44,13 @@ export default function LoyaltyStars(props: Props) {
                 borderColor: 'black',
                 borderWidth: '2px',
                 borderStyle: 'none',
-                margin: '30px'
+                margin: '30px',
+                alignItems: 'center'                
             }}
-        >
-            <Button
-                onClick={handleReset}
-                endIcon={<HighlightOffIcon />}
-            >
-            </Button>          
+        >  
+            <IconButton onClick={handleReset}>
+                        <CancelIcon />
+                    </IconButton>       
             {Array.from({ length: 10 }).map((_, index) => {
                 return (
                     <StarIcon

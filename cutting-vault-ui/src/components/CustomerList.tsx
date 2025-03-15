@@ -35,7 +35,12 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
     useEffect(() => {
         const init = async () => {
             try {
-                const result = await getCustomerPage( { pageNumber:1, itemsPerPage:10000, sortColumn:'LastName', directionAsc:true });
+                const result = await getCustomerPage({
+                    pageNumber: 1,
+                    itemsPerPage: 10000,
+                    sortColumn: 'LastName',
+                    directionAsc: true,
+                });
                 setTotalRows(result.page);
                 setRows(result.page);
             } catch (err) {
@@ -77,9 +82,9 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
 
     return (
         <Stack direction="row" spacing={2}>
-                <Box>
-                    <Typography variant="h4">Customer Search</Typography>
-                </Box>            
+            <Box>
+                <Typography variant="h4">Customer Search</Typography>
+            </Box>
             <Box>
                 <Box
                     sx={{
@@ -88,6 +93,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
                         gap: 2,
                         width: '100%',
                         maxWidth: 360,
+                        alignItems: 'center',
                     }}
                 >
                     <TextField
@@ -110,6 +116,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
                         gap: 2,
                         width: '100%',
                         maxWidth: 360,
+                        alignItems: 'center',
                     }}
                 >
                     <TextField
@@ -126,11 +133,11 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
                     </IconButton>
                 </Box>
                 {selectedCustomer !== null && (
-                            <Typography>
-                                Selected customer: {selectedCustomer.firstName}{' '}
-                                {selectedCustomer.lastName}
-                            </Typography>
-                        )}                
+                    <Typography>
+                        Selected customer: {selectedCustomer.firstName}{' '}
+                        {selectedCustomer.lastName}
+                    </Typography>
+                )}
             </Box>
             <Box
                 sx={{
@@ -138,7 +145,7 @@ const CustomerList: React.FC<CustomerListProps> = ({ callback }) => {
                     maxWidth: 360,
                     height: 400,
                     overflowY: 'auto',
-                    bgcolor: 'background.paper',
+
                     borderStyle: 'solid',
                     borderWidth: '1px',
                     borderRadius: '5px',
