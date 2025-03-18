@@ -25,11 +25,17 @@ namespace CuttingVaultApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCustomerPage([FromQuery] int pageNumber, [FromQuery] int itemsPerPage, string orderBy, bool ascending)
-        { 
+        public async Task<IActionResult> GetCustomerPage([FromQuery] int pageNumber,
+            [FromQuery] int itemsPerPage,
+            [FromQuery] string orderBy,
+            [FromQuery] bool ascending,
+            [FromQuery] string? filters = null)
+        {
             try
             {
-                var list = await _customerRepository.GetPageAsync(pageNumber, itemsPerPage, orderBy, ascending);
+                _logger.LogDebug($"Get Customer request: Page:{pageNumber}, Items:{itemsPerPage}, Order:{orderBy}, Asc:{ascending}, Filters:{filters}");
+
+                var list = await _customerRepository.GetPageAsync(pageNumber, itemsPerPage, orderBy, ascending, filters);
                 return Ok(list);
             }
             catch (Exception ex)

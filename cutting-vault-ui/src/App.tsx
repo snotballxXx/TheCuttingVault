@@ -7,8 +7,6 @@ import { Provider } from 'react-redux';
 import store from './store/store';
 import PrivateRoute from './components/PrivateRoute';
 import NotFoundPage from './components/Pages/NotFoundPage';
-import { getCookie } from './utils/cookies';
-import { setAuthToken } from './services/api-service';
 import CustomerPage from './components/Pages/CustomerPage';
 import { SnackbarProvider } from 'notistack';
 import LoyaltyPage from './components/Pages/LoyaltyPage';
@@ -18,8 +16,6 @@ import { ThemeProviderWrapper } from './Theme-Context';
 import ProfilePage from './components/Pages/ProfilePage';
 
 const App: React.FC = () => {
-    setAuthToken(getCookie('authToken') ?? null);
-
     return (
         <Provider store={store}>
             <ThemeProviderWrapper>

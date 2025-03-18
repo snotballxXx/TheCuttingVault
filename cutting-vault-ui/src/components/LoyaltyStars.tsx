@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, SvgIconProps, SvgIcon, SxProps, Theme, Button, IconButton } from '@mui/material';
+import { Box, SvgIconProps, SvgIcon, SxProps, Theme, IconButton } from '@mui/material';
 import { updateTitle } from '../store/actions';
 import { RootState } from '../store/store';
 import { set } from '../store/loyaltySlice';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 export type LoyaltyCountUpdate = (value: number) => void;

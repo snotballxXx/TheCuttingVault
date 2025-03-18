@@ -7,7 +7,10 @@ import React, {
 } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { lightTheme, darkTheme } from './theme';
-import { getCookie, setCookie } from './utils/cookies';
+import {
+    readValueFromLocalStorage,
+    saveValueToLocalStorage,
+} from './utils/utils';
 
 interface ThemeContextProps {
     isDarkMode: boolean;
@@ -28,12 +31,12 @@ export const ThemeProviderWrapper: React.FC<{ children: React.ReactNode }> = ({
 
     const toggleTheme = () => {
         setIsDarkMode((prev) => !prev);
-        setCookie('theme', isDarkMode ? 'Light' : 'Dark');
+        saveValueToLocalStorage('theme', isDarkMode ? 'Light' : 'Dark');
     };
 
     useEffect(() => {
-        const theme = getCookie('theme');
-        setIsDarkMode(theme !== undefined && theme === 'Dark');
+        const theme = readValueFromLocalStorage('theme');
+        setIsDarkMode(theme !== null && theme === 'Dark');
     }, []);
 
     return (

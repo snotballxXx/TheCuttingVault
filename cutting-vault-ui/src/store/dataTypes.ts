@@ -41,11 +41,18 @@ export type PaginationModel = {
   pageSize: number
 }
 
+export type FilterModel = {
+  field: string,
+  operator: string,
+  value: string
+}
+
 export type PageData = {
   pageNumber: number,
   itemsPerPage: number,
   sortColumn: string,
-  directionAsc: boolean 
+  directionAsc: boolean,
+  filters: FilterModel[] | null
 }
 
 export interface UserLoginRequest {

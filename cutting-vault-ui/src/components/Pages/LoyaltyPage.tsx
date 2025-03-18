@@ -10,6 +10,7 @@ import { RootState } from '../../store/store';
 import { set } from '../../store/loyaltySlice';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import CustomerList from '../CustomerList';
+import ConfettiParticles from '../ConfettiParticles';
 
 const styles = {
     button: {
@@ -26,11 +27,19 @@ const LoyaltyPage: React.FC = () => {
     const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
         null,
     );
+    const [displayConfetti, setDisplayConfetti] = useState(false);
 
     useEffect(() => {
         dispatch(updateTitle('Loyalty Program'));
         dispatch(set(0));
     }, []);
+
+    useEffect(() => {
+        if (loyaltyCount.value === 9) {
+            setDisplayConfetti(true);
+            setTimeout(() => setDisplayConfetti(false), 2000);
+        }
+    }, [loyaltyCount]);
 
     const handleUpdate = async () => {
         try {
@@ -75,6 +84,7 @@ const LoyaltyPage: React.FC = () => {
             <Box>
                 <CustomerList callback={customerSelectedCallback} />
                 <LoyaltyStars disable={selectedCustomer === null} />
+                {displayConfetti && <ConfettiParticles />}
                 <Stack direction={'column'}>
                     <Button
                         variant="contained"

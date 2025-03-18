@@ -41,7 +41,8 @@ namespace CuttingVaultApi
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = issuer,
                     ValidAudience = audience,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
+                    ClockSkew = TimeSpan.Zero
                 };
             });
 
@@ -54,9 +55,7 @@ namespace CuttingVaultApi
 
             // Configure Entity Framework and add DbContext
             builder.Services.AddDbContext<CuttingVaultDbContext>(options =>
-            {
-                var con = builder.Configuration.GetConnectionString("DefaultConnection");
-                Console.WriteLine(con);
+            { 
                 options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection") ?? "");
             });
 

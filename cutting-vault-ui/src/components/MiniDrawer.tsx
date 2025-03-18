@@ -25,11 +25,14 @@ import { logOut } from '../store/userSlice';
 import LoyaltyIcon from '@mui/icons-material/Loyalty';
 import GroupIcon from '@mui/icons-material/Group';
 import ChatIcon from '@mui/icons-material/Chat';
-import { removeUser } from '../utils/utils';
+import {
+    readValueFromLocalStorage,
+    removeUser,
+    saveValueToLocalStorage,
+} from '../utils/utils';
 import ThemeToggleButton from './ThemeToggleButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useEffect } from 'react';
-import { getCookie, setCookie } from '../utils/cookies';
 
 const drawerWidth = 280;
 
@@ -127,26 +130,24 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-      var drawState = getCookie('drawState');
-      if (drawState) {
-        setOpen((drawState === 'open') ? true : false);
-      }
-
+        var drawState = readValueFromLocalStorage('drawState');
+        if (drawState) {
+            setOpen(drawState === 'open' ? true : false);
+        }
     }, []);
 
     const handleDrawerOpen = () => {
         setOpen(true);
-        setCookie('drawState', 'open');
+        saveValueToLocalStorage('drawState', 'open');
     };
 
     const handleDrawerClose = () => {
         setOpen(false);
-        setCookie('drawState', 'closed');
+        saveValueToLocalStorage('drawState', 'closed');
     };
 
     const handleLogOut = () => {
         dispatch(logOut());
-        //localStorage.removeItem('token');
         removeUser();
         navigate('/login');
     };
