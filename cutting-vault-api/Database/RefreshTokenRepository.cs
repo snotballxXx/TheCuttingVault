@@ -4,6 +4,6 @@ namespace CuttingVaultApi.Database
 {
     public class RefreshTokenRepository : Repository<RefreshTokenDbo>, IRefreshTokenRepository
     {
-        public RefreshTokenRepository(CuttingVaultDbContext context) : base(context) { }
+        public RefreshTokenRepository(CuttingVaultDbContext context, ILogger<RefreshTokenRepository> logger) : base(context, logger) { }
     }
 }

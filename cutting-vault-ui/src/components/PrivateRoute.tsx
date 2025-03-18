@@ -4,15 +4,14 @@ import { Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import MainComponent from './MainComponent';
-import { getCookie } from '../utils/cookies';
 import { logIn } from '../store/userSlice';
+import { readObjectFromLocalStorage } from '../utils/utils';
 
 const PrivateRoute: React.FC = () => {
     const dispatch = useDispatch();
     try {
-        const userString = getCookie('user');
-        if (userString) {
-            const user = JSON.parse(userString);
+        const user = readObjectFromLocalStorage('user');
+        if (user) {
             dispatch(logIn(user));
         }
     } catch (err) {

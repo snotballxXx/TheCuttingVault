@@ -15,13 +15,13 @@ import {
     Stack,
     Typography,
 } from '@mui/material';
-import { removeCookie, setCookie } from '../../utils/cookies';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { logIn } from '../../store/userSlice';
 import NewPasswordDialog from './NewPasswordDialog';
 import PasswordInput, { PasswordData } from '../PasswordInput';
 import { DialogResult } from '../../store/dataTypes';
+import { removeUser, saveObjectToLocalStorage } from '../../utils/utils';
 
 export default function LoginDialog() {
     const [open, setOpen] = useState(true);
@@ -56,14 +56,12 @@ export default function LoginDialog() {
         try {
             setPending(true);
             const result = await login({ userName, password: newPasswordData.password });
-            // Store the token in local storage and set the auth token
-            setCookie('authToken', result.token, 7);
             setAuthToken(result.token);
             dispatch(logIn(result.user));
             if (keepLoggedIn) {
-                setCookie('user', JSON.stringify(result.user));
+                saveObjectToLocalStorage('user', result.user);
             } else {
-                removeCookie('user');
+              saveObjectToLocalStorage('user');
             }
 
             if (!result.user.changePassword) {
@@ -73,7 +71,7 @@ export default function LoginDialog() {
                 setChangePassword(true);
             }
         } catch (err) {
-            removeCookie('authToken');
+            removeUser();
             setAuthToken(null);
             setError(true);
         }

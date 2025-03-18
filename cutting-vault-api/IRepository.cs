@@ -24,7 +24,7 @@ namespace CuttingVaultApi
         void DeleteRange(int[] ids);
         void Save();
         Task SaveAsync();
-        PagedSet<T> GetPage(int pageNumber, int itemsPerPage, string orderBy, bool ascending);
-        Task<PagedSet<T>> GetPageAsync(int pageNumber, int itemsPerPage, string orderBy, bool ascending);
+        PagedSet<T> GetPage(int pageNumber, int itemsPerPage, string orderBy, bool ascending, string filters);
+        Task<PagedSet<T>> GetPageAsync(int pageNumber, int itemsPerPage, string orderBy, bool ascending, string filters);
     }
 }

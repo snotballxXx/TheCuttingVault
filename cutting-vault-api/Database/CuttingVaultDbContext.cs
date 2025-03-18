@@ -14,9 +14,18 @@ namespace CuttingVaultApi.Database
 
     public class CuttingVaultDbContext : DbContext
     {
-        public CuttingVaultDbContext(DbContextOptions<CuttingVaultDbContext> options)
+        public CuttingVaultDbContext(DbContextOptions<CuttingVaultDbContext> options, IConfiguration configuration, ILogger<CuttingVaultDbContext> logger)
         : base(options)
         {
+            var connection = configuration.GetConnectionString("DefaultConnection");
+            if (connection != null)
+            {
+                logger.LogDebug($"Connection String: {connection}");
+            }
+            else
+            {
+                logger.LogDebug("Failed to get default connection");
+            }
         }
 
         public DbSet<UserDbo> User { get; set; }

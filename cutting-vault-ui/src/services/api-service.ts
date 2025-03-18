@@ -11,7 +11,6 @@ import {
     UserLoginRequest,
     UserLoginResponse,
 } from '../store/dataTypes';
-import { setCookie } from '../utils/cookies';
 import { removeUser } from '../utils/utils';
 
 // Create an Axios instance with default configuration
@@ -43,7 +42,6 @@ apiClient.interceptors.response.use(
                         `Bearer ${newToken.data.token}`;
                     // Retry the original request with the new token
                     setAuthToken(newToken.data.token);
-                    setCookie('authToken', newToken.data.token, 7);
                     return axios(error.config);
                 }
             } catch (refreshError) {
@@ -80,8 +78,22 @@ export const changePassword = async (changePwd: ChangePasswordRequest) => {
 };
 
 export const getCustomerPage = async (pageData: PageData) => {
+    let queryString = `pageNumber=${pageData.pageNumber}&itemsPerPage=${pageData.itemsPerPage}&orderBy=${pageData.sortColumn}&ascending=${pageData.directionAsc}`;
+
+    if (pageData.filters) {
+        let filters = '';
+        pageData.filters.forEach((e) => {
+            if (e.value) filters += `${e.field}~${e.operator}~${e.value}@`;
+            else filters += `${e.field}~${e.operator}~@`;
+        });
+        if (filters.length > 0) {
+            queryString +=
+                '&filters=' + filters.substring(0, filters.length - 1);
+        }
+    }
+
     const response = await apiClient.get<PagedSet<Customer>>(
-        `/api/v1/customer?pageNumber=${pageData.pageNumber}&itemsPerPage=${pageData.itemsPerPage}&orderBy=${pageData.sortColumn}&ascending=${pageData.directionAsc}`,
+        `/api/v1/customer?${queryString}`,
     );
     return response.data;
 };
@@ -126,7 +138,9 @@ export const updateCustomerComment = async (customer: Customer) => {
 };
 
 export const deleteCustomer = async (ids: number[]) => {
-    const response = await apiClient.delete(`/api/v1/customer/?ids=${ids.join('-')}`);
+    const response = await apiClient.delete(
+        `/api/v1/customer/?ids=${ids.join('-')}`,
+    );
     return response.data;
 };
 
