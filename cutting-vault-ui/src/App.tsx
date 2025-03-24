@@ -14,6 +14,7 @@ import NavigationInitializer from './components/NavigationInitializer';
 import QuickCommentPage from './components/Pages/QuickComment';
 import { ThemeProviderWrapper } from './Theme-Context';
 import ProfilePage from './components/Pages/ProfilePage';
+import ConstructionPage from './components/Pages/ConstructionPage';
 
 const App: React.FC = () => {
     return (
@@ -49,6 +50,10 @@ const App: React.FC = () => {
                                     path="/customer"
                                     element={<CustomerPage />}
                                 />
+                                 <Route
+                                    path="/construction"
+                                    element={<ConstructionPage />}
+                                />                               
                                 <Route path="*" element={<NotFoundPage />} />
                             </Route>
                         </Routes>

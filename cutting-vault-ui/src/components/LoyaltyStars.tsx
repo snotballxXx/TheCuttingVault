@@ -27,12 +27,12 @@ export default function LoyaltyStars(props: Props) {
         dispatch(updateTitle('Counter'));
     }, []);
 
-    const onCountUpdate = (count: number) => {
-        dispatch(set(count));
+    const onCountUpdate = (count: number, x: number, y: number) => {
+        dispatch(set({ value:count, x, y }));
     };
 
     const handleReset = async () => {
-      dispatch(set(0));
+      dispatch(set({value:0, x: 0, y:0 }));
     };    
 
     return (
@@ -62,7 +62,7 @@ export default function LoyaltyStars(props: Props) {
                             width: '3rem',
                             height: '3rem',
                         }}
-                        onClick={() => onCountUpdate(index + 1)}
+                        onClick={(e) => onCountUpdate(index + 1, e.clientX, e.clientY)}
                     />
                 );
             })}

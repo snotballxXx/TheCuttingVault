@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
 import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
@@ -12,19 +11,17 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import HomeIcon from '@mui/icons-material/Home';
+import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/store';
 import { logOut } from '../store/userSlice';
-import LoyaltyIcon from '@mui/icons-material/Loyalty';
-import GroupIcon from '@mui/icons-material/Group';
-import ChatIcon from '@mui/icons-material/Chat';
+import LoyaltyTwoToneIcon from '@mui/icons-material/LoyaltyTwoTone';
+import PeopleAltTwoToneIcon from '@mui/icons-material/PeopleAltTwoTone';
+import InventoryTwoToneIcon from '@mui/icons-material/InventoryTwoTone';
+import CommentTwoToneIcon from '@mui/icons-material/CommentTwoTone';
+import SpaceDashboardTwoToneIcon from '@mui/icons-material/SpaceDashboardTwoTone';
 import {
     readValueFromLocalStorage,
     removeUser,
@@ -33,6 +30,7 @@ import {
 import ThemeToggleButton from './ThemeToggleButton';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useEffect } from 'react';
+import MiniDrawItem from './MiniDrawItem';
 
 const drawerWidth = 280;
 
@@ -132,7 +130,7 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
     useEffect(() => {
         var drawState = readValueFromLocalStorage('drawState');
         if (drawState) {
-            setOpen(drawState === 'open' ? true : false);
+            setOpen(drawState === 'open');
         }
     }, []);
 
@@ -200,194 +198,57 @@ const MiniDrawer: React.FC<MiniDrawerProps> = ({ children }) => {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
-                    <ListItem
-                        key="Home"
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <ListItemButton
-                            component={Link}
-                            to="/"
-                            sx={[
-                                { minHeight: 48, px: 2.5 },
-                                open
-                                    ? { justifyContent: 'initial' }
-                                    : { justifyContent: 'center' },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    { minWidth: 0, justifyContent: 'center' },
-                                    open ? { mr: 3 } : { mr: 'auto' },
-                                ]}
-                            >
-                                <HomeIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Home"
-                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem
-                        key="Loyalty"
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <ListItemButton
-                            component={Link}
-                            to="/loyalty"
-                            sx={[
-                                { minHeight: 48, px: 2.5 },
-                                open
-                                    ? { justifyContent: 'initial' }
-                                    : { justifyContent: 'center' },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    { minWidth: 0, justifyContent: 'center' },
-                                    open ? { mr: 3 } : { mr: 'auto' },
-                                ]}
-                            >
-                                <LoyaltyIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Loyalty Program"
-                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem
-                        key="Customer"
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <ListItemButton
-                            component={Link}
-                            to="/customer"
-                            sx={[
-                                { minHeight: 48, px: 2.5 },
-                                open
-                                    ? { justifyContent: 'initial' }
-                                    : { justifyContent: 'center' },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    { minWidth: 0, justifyContent: 'center' },
-                                    open ? { mr: 3 } : { mr: 'auto' },
-                                ]}
-                            >
-                                <GroupIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Customer Management"
-                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem
-                        key="quickComment"
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <ListItemButton
-                            component={Link}
-                            to="/comment"
-                            sx={[
-                                { minHeight: 48, px: 2.5 },
-                                open
-                                    ? { justifyContent: 'initial' }
-                                    : { justifyContent: 'center' },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    { minWidth: 0, justifyContent: 'center' },
-                                    open ? { mr: 3 } : { mr: 'auto' },
-                                ]}
-                            >
-                                <ChatIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Quick Comment"
-                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                {/* Spacer this forces kogout down*/}
+                <MiniDrawItem
+                    title="Home"
+                    route="/"
+                    isOpen={open}
+                    getIcon={() => <HomeTwoToneIcon />}
+                />
+                <MiniDrawItem
+                    title="Loyalty Program"
+                    route="/loyalty"
+                    isOpen={open}
+                    getIcon={() => <LoyaltyTwoToneIcon />}
+                />
+                <MiniDrawItem
+                    title="Customer Management"
+                    route="/customer"
+                    isOpen={open}
+                    getIcon={() => <PeopleAltTwoToneIcon />}
+                />
+                <MiniDrawItem
+                    title="Quick Comment"
+                    route="/comment"
+                    isOpen={open}
+                    getIcon={() => <CommentTwoToneIcon />}
+                />
+                <MiniDrawItem
+                    title="Inventory"
+                    route="/construction"
+                    isOpen={open}
+                    getIcon={() => <InventoryTwoToneIcon />}
+                />
+                <MiniDrawItem
+                    title="Dashboard"
+                    route="/construction"
+                    isOpen={open}
+                    getIcon={() => <SpaceDashboardTwoToneIcon />}
+                />
+                {/* Spacer this forces logout down*/}
                 <Box sx={{ flexGrow: 1 }} />
-                <List>
-                    <ListItem
-                        key="profile"
-                        disablePadding
-                        sx={{ display: 'block' }}
-                    >
-                        <ListItemButton
-                            component={Link}
-                            to="/profile"
-                            sx={[
-                                { minHeight: 48, px: 2.5 },
-                                open
-                                    ? { justifyContent: 'initial' }
-                                    : { justifyContent: 'center' },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    { minWidth: 0, justifyContent: 'center' },
-                                    open ? { mr: 3 } : { mr: 'auto' },
-                                ]}
-                            >
-                                <AccountCircleIcon fontSize="large" />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Profile"
-                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
+                <MiniDrawItem
+                    title="Profile"
+                    route="/profile"
+                    isOpen={open}
+                    getIcon={() => <AccountCircleIcon fontSize="large" />}
+                />
                 <Divider />
-                <List sx={{ display: 'flex' }}>
-                    <ListItem
-                        key="LogOut"
-                        disablePadding
-                        sx={{ display: 'block', alignSelf: 'flex-end' }}
-                    >
-                        <ListItemButton
-                            onClick={() => handleLogOut()}
-                            sx={[
-                                { minHeight: 48, px: 2.5 },
-                                open
-                                    ? { justifyContent: 'initial' }
-                                    : { justifyContent: 'center' },
-                            ]}
-                        >
-                            <ListItemIcon
-                                sx={[
-                                    { minWidth: 0, justifyContent: 'center' },
-                                    open ? { mr: 3 } : { mr: 'auto' },
-                                ]}
-                            >
-                                <LogoutIcon />
-                            </ListItemIcon>
-                            <ListItemText
-                                primary="Log Out"
-                                sx={[open ? { opacity: 1 } : { opacity: 0 }]}
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                </List>
+                <MiniDrawItem
+                    title="Log Out"
+                    onClick={() => handleLogOut()}
+                    isOpen={open}
+                    getIcon={() => <LogoutIcon />}
+                />
             </Drawer>
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
                 <DrawerHeader />

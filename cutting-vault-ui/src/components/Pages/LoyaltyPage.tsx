@@ -31,11 +31,15 @@ const LoyaltyPage: React.FC = () => {
 
     useEffect(() => {
         dispatch(updateTitle('Loyalty Program'));
-        dispatch(set(0));
+        dispatch(set({ value: 0, x: 0, y: 0 }));
     }, []);
 
     useEffect(() => {
-        if (loyaltyCount.value === 9) {
+        if (
+            loyaltyCount.value === 9 &&
+            selectedCustomer &&
+            loyaltyCount.x > 0
+        ) {
             setDisplayConfetti(true);
             setTimeout(() => setDisplayConfetti(false), 2000);
         }
@@ -65,9 +69,9 @@ const LoyaltyPage: React.FC = () => {
     const customerSelectedCallback = (customer: Customer | null) => {
         setSelectedCustomer(customer);
         if (customer) {
-            dispatch(set(customer?.loyaltyCount));
+            dispatch(set({ value: customer.loyaltyCount, x: 0, y: 0 }));
         } else {
-            dispatch(set(0));
+            dispatch(set({ value: 0, x: 0, y: 0 }));
         }
     };
 
@@ -84,7 +88,9 @@ const LoyaltyPage: React.FC = () => {
             <Box>
                 <CustomerList callback={customerSelectedCallback} />
                 <LoyaltyStars disable={selectedCustomer === null} />
-                {displayConfetti && <ConfettiParticles />}
+                {displayConfetti && (
+                    <ConfettiParticles x={loyaltyCount.x} y={loyaltyCount.y} />
+                )}
                 <Stack direction={'column'}>
                     <Button
                         variant="contained"

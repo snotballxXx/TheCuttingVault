@@ -4,10 +4,14 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface LoyaltyState {
     value: number;
+    x: number;
+    y: number;
 }
 
 const initialState: LoyaltyState = {
     value: 0,
+    x: 0,
+    y: 0
 };
 
 const loyaltySlice = createSlice({
@@ -20,8 +24,10 @@ const loyaltySlice = createSlice({
         decrement: (state) => {
             state.value -= 1;
         },
-        set: (state, action: PayloadAction<number>) => {
-            state.value = action.payload;
+        set: (state, action: PayloadAction<LoyaltyState>) => {
+            state.value = action.payload.value;
+            state.x = action.payload.x;
+            state.y = action.payload.y
         },
     },
 });

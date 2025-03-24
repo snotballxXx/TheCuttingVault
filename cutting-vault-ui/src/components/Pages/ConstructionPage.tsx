@@ -1,9 +1,9 @@
 // NotFoundPage.tsx
 import React from 'react';
 import { Box } from '@mui/material';
-import notFoundImage from '../../assets/not-found.jpg';
+import construction from '../../assets/construction.png';
 
-const NotFoundPage: React.FC = () => {
+const ConstructionPage: React.FC = () => {
     return (
         <Box
             sx={{
@@ -14,12 +14,12 @@ const NotFoundPage: React.FC = () => {
             }}
         >
             <img
-                src={notFoundImage}
-                alt="Not Found"
+                src={construction}
+                alt="In progress"
                 style={{ maxWidth: '50%', height: 'auto' }}
             />
         </Box>
     );
 };
 
-export default NotFoundPage;
+export default ConstructionPage;

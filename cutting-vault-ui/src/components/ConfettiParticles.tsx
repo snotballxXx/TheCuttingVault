@@ -2,12 +2,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import Particles, { initParticlesEngine } from '@tsparticles/react';
 import { type ISourceOptions } from '@tsparticles/engine';
-// import { loadAll } from "@tsparticles/all"; // if you are going to use `loadAll`, install the "@tsparticles/all" package too.
-import { loadFull } from 'tsparticles'; // if you are going to use `loadFull`, install the "tsparticles" package too.
-//import { loadSlim } from '@tsparticles/slim'; // if you are going to use `loadSlim`, install the "@tsparticles/slim" package too.
-// import { loadBasic } from "@tsparticles/basic"; // if you are going to use `loadBasic`, install the "@tsparticles/basic" package too.
+import { loadFull } from 'tsparticles';
 
-const ConfettiParticles = () => {
+type Props = {
+    x: number;
+    y: number;
+};
+
+const ConfettiParticles = (props: Props) => {
     const [init, setInit] = useState(false);
 
     // this should be run only once per application lifetime
@@ -18,6 +20,14 @@ const ConfettiParticles = () => {
             setInit(true);
         });
     }, []);
+
+    const container = document.getElementById('root');
+    if (!container) return;
+    const { x, y, width, height } = container.getBoundingClientRect();
+
+    // Convert client coordinates to percentages
+    const xPercent = ((props.x - x) / width) * 100;
+    const yPercent = ((props.y - y) / height) * 100;
 
     const particlesLoaded = async (): Promise<void> => {};
 
@@ -32,8 +42,8 @@ const ConfettiParticles = () => {
                     duration: 0.2, // Short-lived burst
                 },
                 position: {
-                    x: 50, // 50% of the canvas width
-                    y: 50, // 50% of the canvas height
+                    x: xPercent, // 50% of the canvas width
+                    y: yPercent, // 50% of the canvas height
                 },
                 rate: {
                     quantity: 100, // Number of particles emitted
@@ -58,7 +68,7 @@ const ConfettiParticles = () => {
                     value: 1, // Fully visible particles
                 },
                 size: {
-                    value: { min: 3, max: 8 }, // Random sizes for particles
+                    value: { min: 1, max: 3 }, // Random sizes for particles
                 },
                 move: {
                     enable: true,

@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { updateTitle } from '../../store/actions';
 import { useSnackbar } from 'notistack';
 import { Customer } from '../../store/dataTypes';
-import { set } from '../../store/loyaltySlice';
 import UpgradeIcon from '@mui/icons-material/Upgrade';
 import CustomerList from '../CustomerList';
 import { updateCustomerComment } from '../../services/api-service';
@@ -27,7 +26,6 @@ const QuickCommentPage: React.FC = () => {
 
     useEffect(() => {
         dispatch(updateTitle('Quick Comment'));
-        dispatch(set(0));
     }, []);
 
     const handleUpdate = async () => {
