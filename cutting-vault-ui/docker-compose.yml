@@ -1,5 +1,14 @@
 version: '3'
 services:
+    cloudflared:
+        image: cloudflare/cloudflared:latest
+        restart: always
+        command: tunnel run
+        networks:
+          - cutting-vault-network
+        volumes:
+          - /home/pete/projects/cloudflared:/etc/cloudflared
+
     mysql-cutting-vault:
         image: mysql:latest
         container_name: mysql
@@ -22,18 +31,10 @@ services:
             - '8090:80'
             - '8091:443'
         volumes:
-            #- /etc/letsencrypt/archive/cutting-vault.duckdns.org/:/var/www/certbot/:ro
             - ./nginx/conf/:/etc/nginx/conf.d/:ro
-        #      - ./certbot/www:/var/www/certbot/:ro
         networks:
             - cutting-vault-network
         restart: always
-
-    # certbot:
-    #   image: certbot/certbot:latest
-    #   volumes:
-    #     - ./certbot/www/:/var/www/certbot/:rw
-    #     - ./certbot/conf/:/etc/letsencrypt/:rw
 
     cutting-vault-api:
         image: cutting-vault-api
@@ -49,3 +50,5 @@ services:
 networks:
     cutting-vault-network:
         driver: bridge
+        
+

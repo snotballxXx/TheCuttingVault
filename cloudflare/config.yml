@@ -1,0 +1,32 @@
+tunnel: 5b8e832b-4a94-4fbf-ae1b-4c34eb087122
+credentials-file: /etc/cloudflared/5b8e832b-4a94-4fbf-ae1b-4c34eb087122.json
+
+ingress:
+  - hostname: www.wairau-valley.com
+    service: http://cutting-vault-ui:80
+
+ # - hostname: ssh.yourdomain.com
+ #   service: ssh://sshserver:22
+
+  - service: http_status:404
+#sudo chmod 777 ~/projects/cloudflared
+#
+#docker run --rm \
+#  -v ~/projects/cloudflared:/home/nonroot/.cloudflared \
+#  cloudflare/cloudflared:latest \
+#  tunnel login
+#  
+# docker run --rm \
+#  -v ~/projects/cloudflared:/home/nonroot/.cloudflared \
+#  cloudflare/cloudflared:latest \
+#  tunnel create cv-tunnel
+#  
+#docker run --rm \
+#  -v ~/projects/cloudflared:/home/nonroot/.cloudflared \
+#  cloudflare/cloudflared:latest \
+#  tunnel route dns cv-tunnel www.wairau-valley.com
+#  
+#docker run --rm \
+#  -v ~/projects/cloudflared:/home/nonroot/.cloudflared \
+#  cloudflare/cloudflared:latest \
+#  tunnel route dns cv-tunnel wairau-valley.com
